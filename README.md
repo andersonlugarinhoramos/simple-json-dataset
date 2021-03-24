@@ -1,5 +1,5 @@
 # Simple-JSON-DataSet
-Helper para converter JSON in DataSet 
+Helper para converter JSON em DataSet para Delphi
 
 
 ```delphi
