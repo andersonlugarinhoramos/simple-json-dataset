@@ -3,7 +3,8 @@ JSONObject as DataSet
 
 
 ```delphi
-Simple.JSON.DataSet;
+use
+  Simple.JSON.DataSet;
 
 begin
   DataSet.LoadFromJSON(JSONObject);    
@@ -13,7 +14,8 @@ JSONArray as DataSet
 
 
 ```delphi
-Simple.JSON.DataSet;
+use
+  Simple.JSON.DataSet;
 
 begin
   DataSet.LoadFromJSON(JSONArray);
@@ -23,7 +25,8 @@ JSONString as DataSet
 
 
 ```delphi
-Simple.JSON.DataSet;
+use
+  Simple.JSON.DataSet;
 
 begin
   DataSet.LoadFromJSON(String);
@@ -34,7 +37,8 @@ DataSet as JSONObject
 
 
 ```delphi
-Simple.JSON.DataSet;
+use
+  Simple.JSON.DataSet;
 
 begin
   DataSet.ToJSONObject;
@@ -44,7 +48,8 @@ DataSet as JSONArray
 
 
 ```delphi
-Simple.JSON.DataSet;
+use
+  Simple.JSON.DataSet;
 
 begin
   DataSet.ToJSONArray;
