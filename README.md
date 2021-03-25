@@ -1,14 +1,35 @@
 # Simple-JSON-DataSet for Delphi
-JSON as DataSet
+JSONObject as DataSet
 
 
 ```delphi
 Simple.JSON.DataSet;
 
 begin
-  DataSet.JSONToDataSet(JSONStringValue);
+  DataSet.LoadFromJSON(JSONObject);    
 end.
 ```
+JSONArray as DataSet
+
+
+```delphi
+Simple.JSON.DataSet;
+
+begin
+  DataSet.LoadFromJSON(JSONArray);
+end.
+```
+JSONString as DataSet
+
+
+```delphi
+Simple.JSON.DataSet;
+
+begin
+  DataSet.LoadFromJSON(String);
+end.
+```
+
 DataSet as JSONObject
 
 
