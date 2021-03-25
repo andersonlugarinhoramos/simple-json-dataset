@@ -19,8 +19,11 @@ type
   TSimpleJSONDataSetHelper = class Helper for TDataSet
   private
      function DataSetToJSON(AType: TypeReturn): TJSONAncestor;
+     procedure JSONToDataSet(AValue: String);
   public
-    procedure JSONToDataSet(AValue: String);
+    procedure LoadFromJSON(const AValue: TJSONObject); overload;
+    procedure LoadFromJSON(const AValue: TJSONArray); overload;
+    procedure LoadFromJSON(const AValue: String); overload;
     function ToJSONObject: TJSONObject;
     function ToJSONArray: TJSONArray;
 
@@ -29,6 +32,21 @@ type
 implementation
 
 { TSimpleJSONDataSet }
+
+procedure LoadFromJSON(const AValue: TJSONObject); overload;
+begin
+  JSONToDataSet(AValue.ToString);
+end;
+
+procedure LoadFromJSON(const AValue: TJSONArray); overload;
+begin
+  JSONToDataSet(AValue.ToString);
+end;
+
+procedure LoadFromJSON(const AValue: String); overload;
+begin
+  JSONToDataSet(AValue);
+end;
 
 function TSimpleJSONDataSetHelper.ToJSONObject: TJSONObject;
 begin
