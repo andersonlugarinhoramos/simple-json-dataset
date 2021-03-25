@@ -14,67 +14,55 @@ uses
   REST.Response.Adapter;
 
 type
+  TypeReturn = (tpJSONObject, tpJSONArray);
+
   TSimpleJSONDataSetHelper = class Helper for TDataSet
   private
-    procedure JSONObjectToDataSet(AValue: String);
-    procedure JSONArrayToDataSet(AValue: String);
+     function DataSetToJSON(AType: TypeReturn): TJSONAncestor;
   public
     procedure JSONToDataSet(AValue: String);
-    function DataSetToJSON: String;
+    function ToJSONObject: TJSONObject;
+    function ToJSONArray: TJSONArray;
+
   end;
 
 implementation
 
 { TSimpleJSONDataSet }
 
-procedure TSimpleJSONDataSetHelper.JSONArrayToDataSet(AValue: String);
-var
-  FJSON: TJSONArray;
-  FConversion : TCustomJSONDataSetAdapter;
+function TSimpleJSONDataSetHelper.ToJSONObject: TJSONObject;
 begin
-  FJSON := TJSONObject.ParseJSONValue(AValue) as TJSONArray;
-  FConversion := TCustomJSONDataSetAdapter.Create(Nil);
-
-  try
-    FConversion.Dataset := Self;
-    FConversion.UpdateDataSet(FJSON);
-  finally
-    FConversion.Free;
-    FJSON.Free;
-  end;
+  Result := TJSONObject(DataSetToJSON(tpJSONObject));
 end;
 
-procedure TSimpleJSONDataSetHelper.JSONObjectToDataSet(AValue: String);
-var
-  FJSON: TJSONObject;
-  FConversion : TCustomJSONDataSetAdapter;
+function TSimpleJSONDataSetHelper.ToJSONArray: TJSONArray;
 begin
-  FJSON := TJSONObject.ParseJSONValue(AValue) as TJSONObject;
-  FConversion := TCustomJSONDataSetAdapter.Create(Nil);
-
-  try
-    FConversion.Dataset := Self;
-    FConversion.UpdateDataSet(FJSON);
-  finally
-    FConversion.Free;
-    FJSON.Free;
-  end;
+  Result := TJSONArray(DataSetToJSON(tpJSONArray));
 end;
 
 procedure TSimpleJSONDataSetHelper.JSONToDataSet(AValue: String);
+var
+  FJSON: TJSONValue;
+  FConversion : TCustomJSONDataSetAdapter;
 begin
   if (AValue = EmptyStr) then
   begin
     Exit;
   end;
 
-  if Copy(AValue,1,1) = '[' then
-    JSONArrayToDataSet(AValue)
-  else
-    JSONObjectToDataSet(AValue);
+  FJSON := TJSONObject.ParseJSONValue(AValue);
+  FConversion := TCustomJSONDataSetAdapter.Create(nil);
+
+  try
+    FConversion.Dataset := Self;
+    FConversion.UpdateDataSet(FJSON);
+  finally
+    FConversion.Free;
+    FJSON.Free;
+  end;
 end;
 
-function TSimpleJSONDataSetHelper.DataSetToJSON: String;
+function TSimpleJSONDataSetHelper.DataSetToJSON(AType: TypeReturn): TJSONAncestor;
 var
   FColumnName: String;
   FJSONObject: TJsonObject;
@@ -82,6 +70,9 @@ var
   FPosition: TBookmark;
 begin
   FJSONArray := TJSONArray.Create;
+  FJSONObject := TJSONObject.Create;
+
+  Result := FJSONArray;
   try
     if Self.Active then
     begin
@@ -113,17 +104,17 @@ begin
                 ftWord,
                 ftCurrency :
                 begin
-                  FJSONObject.AddPair(TJSONPair.Create(TJSONString.Create( FColumnName ), TJSONNumber.Create(Self.Fields[I].Value)));
+                  FJSONObject.AddPair(TJSONPair.Create(TJSONString.Create( FColumnName ), TJSONNumber.Create(Self.Fields[I].AsFloat)));
                 end;
 
                 ftDate:
                 begin
-                  FJSONObject.AddPair(TJSONPair.Create(TJSONString.Create( FColumnName ), TJSONString.Create(FormatDateTime('yyyy-mm-dd', Self.Fields[I].AsDateTime))));
+                  FJSONObject.AddPair(TJSONPair.Create(TJSONString.Create( FColumnName ), TJSONString.Create(FormatDateTime('dd/mm/yyyy', Self.Fields[I].AsDateTime))));
                 end;
 
                 ftDatetime:
                 begin
-                  FJSONObject.AddPair(TJSONPair.Create(TJSONString.Create( FColumnName ), TJSONString.Create(FormatDateTime('yyyy-mm-dd hh:mm:ss', Self.Fields[I].AsDateTime))));
+                  FJSONObject.AddPair(TJSONPair.Create(TJSONString.Create( FColumnName ), TJSONString.Create(FormatDateTime('dd/mm/yyyy hh:mm:ss', Self.Fields[I].AsDateTime))));
                 end;
 
                 ftTime:
@@ -147,8 +138,10 @@ begin
       end;
     end;
   finally
-    Result := FJSONArray.ToString;
-    FJSONArray.Free;
+    case AType of
+      tpJSONArray : Result := FJSONArray;
+      tpJSONObject : Result := FJSONObject;
+    end;
   end;
 end;
 
