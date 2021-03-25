@@ -33,17 +33,17 @@ implementation
 
 { TSimpleJSONDataSet }
 
-procedure LoadFromJSON(const AValue: TJSONObject); overload;
+procedure TSimpleJSONDataSetHelper.LoadFromJSON(const AValue: TJSONObject);
 begin
   JSONToDataSet(AValue.ToString);
 end;
 
-procedure LoadFromJSON(const AValue: TJSONArray); overload;
+procedure TSimpleJSONDataSetHelper.LoadFromJSON(const AValue: TJSONArray);
 begin
   JSONToDataSet(AValue.ToString);
 end;
 
-procedure LoadFromJSON(const AValue: String); overload;
+procedure TSimpleJSONDataSetHelper.LoadFromJSON(const AValue: String);
 begin
   JSONToDataSet(AValue);
 end;
