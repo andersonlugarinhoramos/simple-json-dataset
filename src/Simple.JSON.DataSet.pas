@@ -3,8 +3,6 @@ unit Simple.JSON.DataSet;
 interface
 
 uses
-  VCl.StdCtrls,
-
   System.Classes,
   System.SysUtils,
   System.JSON,
